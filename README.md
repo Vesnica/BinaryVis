@@ -1,10 +1,24 @@
 # BinaryVis
 
-二进制数据 3D 可视化系统 - 使用 Rust 后端 + Three.js 前端实现
+<div align="center">
+  <img src="docs/images/BinaryVis.png" alt="BinaryVis 可视化效果" width="800"/>
+
+  **二进制数据 3D 可视化系统**
+
+  使用 Rust 后端 + Three.js 前端实现
+
+  [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+  [![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
+  [![Node](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
+</div>
+
+---
 
 ## 项目概述
 
 BinaryVis 是一个基于 Web 的二进制数据 3D 可视化工具，通过将二进制数据映射到 3D 空间，帮助用户识别数据中的模式和结构。
+
+> **灵感来源**: 本项目受 [Veles](https://github.com/codilime/veles) 启发，使用现代 Web 技术栈重新实现了二进制可视化功能。
 
 ### 核心功能
 
@@ -298,3 +312,24 @@ npm run format  # 如果配置了 prettier
 - [前端架构](docs/FRONTEND_ARCHITECTURE.md)
 - [API 设计](docs/API_DESIGN.md)
 - [任务列表](docs/TODO.md)
+
+## 参考项目
+
+本项目的设计灵感来自 [Veles](https://github.com/codilime/veles) - 一个由 CodiLime 开发的开源二进制分析和可视化工具。
+
+### Veles vs BinaryVis 对比
+
+| 特性 | Veles | BinaryVis |
+|------|-------|-----------|
+| **技术栈** | C++14 + Qt5 + Python3 | Rust + Axum + Three.js |
+| **架构** | 桌面应用 | Web 应用 |
+| **部署** | 需要安装客户端 | 浏览器访问即可 |
+| **渲染引擎** | OpenGL (Qt) | WebGL (Three.js) |
+| **数据传输** | 本地文件 | WebSocket 流式传输 |
+| **采样算法** | 内置多种算法 | 均匀采样 |
+| **可视化类型** | Trigram, Digram, Hex | Trigram (计划扩展) |
+| **跨平台** | Windows/Linux/macOS | 任何支持 WebGL 的浏览器 |
+
+### 致谢
+
+感谢 [Veles](https://github.com/codilime/veles) 项目提供的优秀设计思路和可视化理念。BinaryVis 在保持核心可视化原理的同时，采用了更现代的 Web 技术栈，使其更易于部署和使用。
