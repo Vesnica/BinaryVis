@@ -1,0 +1,360 @@
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --border-color: #333333;
+  --accent-color: #4a9eff;
+  --hover-color: #5aaaff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+}
+
+/* 控制面板 */
+.control-panel {
+  width: 320px;
+  height: 100vh;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.control-group {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.control-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.control-group h3 {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 文件输入 */
+input[type='file'] {
+  width: 100%;
+  padding: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+input[type='file']::file-selector-button {
+  padding: 6px 12px;
+  background: var(--accent-color);
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+input[type='file']::file-selector-button:hover {
+  background: var(--hover-color);
+}
+
+.file-info {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.file-info div {
+  margin: 4px 0;
+}
+
+/* 标签 */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+label span {
+  display: inline-block;
+  min-width: 40px;
+  text-align: right;
+  margin-left: 8px;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* 滑块 */
+input[type='range'] {
+  width: 100%;
+  margin: 4px 0;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* 按钮 */
+button,
+.btn-primary {
+  padding: 10px 16px;
+  background: var(--accent-color);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover:not(:disabled),
+.btn-primary:hover:not(:disabled) {
+  background: var(--hover-color);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--secondary-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--border-color);
+}
+
+#sample-button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+#reset-colors {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* 按钮组 */
+.button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shape-btn {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shape-btn:hover {
+  border-color: var(--accent-color);
+}
+
+.shape-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+/* 单选按钮组 */
+.radio-group label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.radio-group input[type='radio'] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+/* 状态信息 */
+.status-info {
+  font-size: 13px;
+  line-height: 2;
+}
+
+.status-info div {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.status-info span {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+/* 渲染容器 */
+#render-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#render-container canvas {
+  display: block;
+}
+
+/* 错误弹窗 */
+.error-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.error-content {
+  background: var(--bg-secondary);
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #ff4444;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.error-content h2 {
+  color: #ff4444;
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.error-message {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.error-content details {
+  margin: 16px 0;
+}
+
+.error-content summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.error-content pre {
+  background: var(--bg-primary);
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ff6666;
+}
+
+.error-content button {
+  width: 100%;
+  margin-top: 16px;
+  background: #ff4444;
+}
+
+.error-content button:hover {
+  background: #ff5555;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
