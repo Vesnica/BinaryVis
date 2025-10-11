@@ -60,8 +60,6 @@ export class WebSocketClient {
   handleMessage(data) {
     const message = decode(new Uint8Array(data));
 
-    console.log('Received WebSocket message, type:', message.type);
-
     if (message.type === 'error') {
       // Fast-fail: 错误直接抛出
       // payload 已经是 Uint8Array,需要再次 decode
@@ -74,7 +72,6 @@ export class WebSocketClient {
       // payload 字段是用 serde_bytes 序列化的,已经是字节数组
       // 需要将其转换为 Uint8Array 后再 decode
       const payload = decode(new Uint8Array(message.payload));
-      console.log('Decoded payload:', payload);
       handler(payload);
     } else {
       console.warn('No handler registered for message type:', message.type);

@@ -25,32 +25,87 @@ pub struct UploadResponse {
     size: usize,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CheckFingerprintRequest {
+    fingerprint: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct CheckFingerprintResponse {
+    exists: bool,
+    file_id: Option<String>,
+}
+
+// 检查文件指纹是否已存在
+pub async fn check_fingerprint(
+    Extension(state): Extension<Arc<AppState>>,
+    axum::extract::Query(req): axum::extract::Query<CheckFingerprintRequest>,
+) -> Result<Json<CheckFingerprintResponse>> {
+    let exists = state.file_manager.check_fingerprint(&req.fingerprint).await;
+
+    if exists {
+        Ok(Json(CheckFingerprintResponse {
+            exists: true,
+            file_id: Some(req.fingerprint),
+        }))
+    } else {
+        Ok(Json(CheckFingerprintResponse {
+            exists: false,
+            file_id: None,
+        }))
+    }
+}
+
 pub async fn upload_file(
     Extension(state): Extension<Arc<AppState>>,
     mut multipart: Multipart,
 ) -> Result<Json<UploadResponse>> {
+    let mut filename = String::new();
+    let mut data: Option<bytes::Bytes> = None;
+    let mut fingerprint: Option<String> = None;
+
+    // 解析 multipart 数据
     while let Some(field) = multipart
         .next_field()
         .await
         .map_err(|e| AppError::BadRequest(e.to_string()))?
     {
-        let filename = field.file_name().unwrap_or("unknown").to_string();
-        let data = field
-            .bytes()
-            .await
-            .map_err(|e| AppError::BadRequest(e.to_string()))?;
+        let field_name = field.name().unwrap_or("").to_string();
 
-        // 保存文件
-        let file_id = state.file_manager.save_file(&data, &filename).await?;
-
-        return Ok(Json(UploadResponse {
-            file_id,
-            filename,
-            size: data.len(),
-        }));
+        match field_name.as_str() {
+            "file" => {
+                filename = field.file_name().unwrap_or("unknown").to_string();
+                data = Some(
+                    field
+                        .bytes()
+                        .await
+                        .map_err(|e| AppError::BadRequest(e.to_string()))?,
+                );
+            }
+            "fingerprint" => {
+                fingerprint = Some(
+                    field
+                        .text()
+                        .await
+                        .map_err(|e| AppError::BadRequest(e.to_string()))?,
+                );
+            }
+            _ => {}
+        }
     }
 
-    Err(AppError::BadRequest("No file provided".to_string()))
+    let data = data.ok_or_else(|| AppError::BadRequest("No file provided".to_string()))?;
+    let fingerprint =
+        fingerprint.ok_or_else(|| AppError::BadRequest("No fingerprint provided".to_string()))?;
+
+    // 保存文件（使用指纹作为文件名）
+    let file_id = state.file_manager.save_file(&data, &fingerprint).await?;
+
+    Ok(Json(UploadResponse {
+        file_id,
+        filename,
+        size: data.len(),
+    }))
 }
 
 pub async fn get_file_info(

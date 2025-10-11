@@ -1,175 +1,134 @@
 # BinaryVis
 
 <div align="center">
-  <img src="docs/images/BinaryVis.png" alt="BinaryVis 可视化效果" width="800"/>
+  <img src="docs/images/BinaryVis.png" alt="BinaryVis Visualization" width="800"/>
 
-  **二进制数据 3D 可视化系统**
+  **Binary Data 3D Visualization System**
 
-  使用 Rust 后端 + Three.js 前端实现
+  Built with Rust Backend + Three.js Frontend
 
   [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
   [![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
   [![Node](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
+
+  English | [简体中文](README_CN.md)
 </div>
 
 ---
 
-## 项目概述
+## Overview
 
-BinaryVis 是一个基于 Web 的二进制数据 3D 可视化工具，通过将二进制数据映射到 3D 空间，帮助用户识别数据中的模式和结构。
+BinaryVis is a web-based 3D visualization tool for binary data that helps users identify patterns and structures in binary files by mapping data to 3D space.
 
-> **灵感来源**: 本项目受 [Veles](https://github.com/codilime/veles) 启发，使用现代 Web 技术栈重新实现了二进制可视化功能。
+> **Inspired by**: This project is inspired by [Veles](https://github.com/codilime/veles) and reimplements binary visualization using modern web technologies.
 
-### 核心功能
+### Key Features
 
-- **Trigram 三元图可视化**: 将连续 3 字节映射到 3D 坐标
-- **实时采样**: 对大文件进行智能降采样（最大 128MB）
-- **多种几何形状**: 立方体、圆柱体、球体，支持平滑过渡
-- **流式传输**: WebSocket 实时数据传输
-- **高性能渲染**: 支持千万级点云实时渲染
+- **Trigram 3D Visualization**: Maps consecutive 3 bytes to 3D coordinates
+- **File Fingerprinting**: Automatic duplicate detection to avoid re-uploading same files
+- **Real-time Sampling**: Intelligent downsampling for large files (up to 128MB)
+- **Multiple Geometries**: Cube, cylinder, sphere with smooth transitions
+- **Streaming Transfer**: WebSocket-based real-time data transfer
+- **High-Performance Rendering**: Supports tens of millions of points
+- **Internationalization**: Auto-detects browser language (Chinese/English)
 
-## 技术栈
+## Tech Stack
 
-### 后端
+### Backend
 - Rust 1.75+
-- Axum 0.7+ (Web 框架)
-- Tokio (异步运行时)
-- Rayon (并行处理)
-- MessagePack (数据序列化)
+- Axum 0.7+ (Web framework)
+- Tokio (Async runtime)
+- Rayon (Parallel processing)
+- MessagePack (Data serialization)
 
-### 前端
-- Vite 5.0 (构建工具)
-- Three.js r160+ (3D 渲染)
+### Frontend
+- Vite 5.0 (Build tool)
+- Three.js r160+ (3D rendering)
 - JavaScript ES2022
-- 原生 CSS
+- Vanilla CSS
 
-## 项目结构
+## Quick Start
 
-```
-BinaryVis/
-├── backend/                 # Rust 后端
-│   ├── src/
-│   │   ├── main.rs         # 程序入口
-│   │   ├── config.rs       # 配置管理
-│   │   ├── error.rs        # 错误处理
-│   │   ├── core/           # 核心模块
-│   │   │   ├── file_manager.rs
-│   │   │   ├── cache.rs
-│   │   │   └── sampler.rs
-│   │   ├── sampling/       # 采样算法
-│   │   │   └── uniform.rs
-│   │   ├── protocol/       # 通信协议
-│   │   │   └── messages.rs
-│   │   └── server/         # HTTP/WebSocket 服务器
-│   │       ├── routes.rs
-│   │       ├── handlers.rs
-│   │       └── websocket.rs
-│   ├── Cargo.toml
-│   └── .env
-│
-└── frontend/               # 前端应用
-    ├── src/
-    │   ├── main.js        # 应用入口
-    │   ├── config.js      # 配置
-    │   ├── core/          # 核心模块
-    │   │   ├── DataManager.js
-    │   │   ├── WebSocketClient.js
-    │   │   └── ErrorHandler.js
-    │   ├── rendering/     # 渲染模块
-    │   │   ├── Renderer.js
-    │   │   ├── TrigramRenderer.js
-    │   │   └── Shaders.js
-    │   ├── ui/            # UI 组件
-    │   │   └── ControlPanel.js
-    │   └── styles/
-    │       └── main.css
-    ├── index.html
-    ├── package.json
-    └── vite.config.js
-```
+### Requirements
 
-## 快速开始
-
-### 环境要求
-
-- Rust 1.75+（建议 1.75 或更高版本）
+- Rust 1.75+ (1.75 or higher recommended)
 - Node.js 18+
-- npm 或 yarn
+- npm or yarn
 
-### 一键启动（推荐）
+### One-Click Start (Recommended)
 
 ```bash
-# 在项目根目录运行启动脚本
+# Run the startup script in project root
 ./start.sh
 ```
 
-启动脚本会自动：
-1. 启动后端服务器（后台运行）
-2. 安装前端依赖（如果需要）
-3. 启动前端开发服务器
+The script will automatically:
+1. Start backend server (runs in background)
+2. Install frontend dependencies (if needed)
+3. Start frontend dev server
 
-前端将在 `http://localhost:5173` 启动（默认会自动在浏览器中打开）
+Frontend will be available at `http://localhost:5173` (automatically opens in browser)
 
-### 手动启动
+### Manual Start
 
-#### 1. 后端启动
+#### 1. Start Backend
 
 ```bash
 cd backend
 
-# 创建上传目录
+# Create upload directory
 mkdir -p uploads
 
-# 运行后端服务器（开发模式）
+# Run backend server (development mode)
 cargo run
 
-# 或编译发布版本
+# Or build and run release version
 cargo build --release
 cargo run --release
 ```
 
-后端服务器将在 `http://0.0.0.0:3000` 启动
+Backend server will start at `http://0.0.0.0:3000`
 
-#### 2. 前端启动
+#### 2. Start Frontend
 
 ```bash
 cd frontend
 
-# 安装依赖
+# Install dependencies
 npm install
 
-# 启动开发服务器
+# Start development server
 npm run dev
 ```
 
-前端开发服务器将在 `http://localhost:5173` 启动
+Frontend dev server will start at `http://localhost:5173`
 
-### 使用方法
+### Usage
 
-1. 打开浏览器访问 `http://localhost:5173`
-2. **上传文件**：点击"选择文件"按钮选择要可视化的二进制文件
-3. **设置采样大小**：使用滑块调整采样大小（1-128 MB）
-4. **开始采样**：点击"开始采样"按钮，等待数据通过 WebSocket 流式传输
-5. **查看可视化**：数据加载完成后将自动渲染为 3D 点云
-6. **调整显示**：使用控制面板调整可视化参数：
-   - **几何形状**：立方体、圆柱体、球体（平滑过渡）
-   - **点大小**：调整点的渲染大小
-   - **亮度**：控制点的亮度
-   - **颜色渐变**：起始和结束颜色
-   - **缩放模式**：启用/禁用深度缩放
+1. Open browser and navigate to `http://localhost:5173`
+2. **Upload File**: Click "Choose File" button to select a binary file
+3. **Set Sample Size**: Use slider to adjust sample size (1-128 MB)
+4. **Start Sampling**: Click "Start Sampling" button and wait for WebSocket streaming
+5. **View Visualization**: After data loads, it will automatically render as 3D point cloud
+6. **Adjust Display**: Use control panel to adjust visualization parameters:
+   - **Geometry Shape**: Cube, cylinder, sphere (smooth transitions)
+   - **Point Size**: Adjust rendering size of points
+   - **Brightness**: Control point brightness
+   - **Color Gradient**: Start and end colors
+   - **Scale Mode**: Enable/disable depth scaling
 
-### 性能说明
+### Performance Notes
 
-- **最大支持 50M 点**：可视化最多支持 5000 万个点
-- **实时渲染**：使用 WebGL 实现 GPU 加速渲染
-- **流式传输**：WebSocket 分块传输，每块 256KB
-- **智能采样**：对大文件自动降采样到指定大小
+- **Max 50M Points**: Supports up to 50 million points
+- **Real-time Rendering**: GPU-accelerated with WebGL
+- **Streaming Transfer**: WebSocket chunks of 256KB each
+- **Smart Sampling**: Auto-downsamples large files to specified size
 
-## 配置
+## Configuration
 
-### 后端配置
+### Backend Configuration
 
-编辑 `backend/.env` 文件：
+Edit `backend/.env`:
 
 ```env
 PORT=3000
@@ -181,9 +140,9 @@ MAX_CONNECTIONS=100
 RUST_LOG=info
 ```
 
-### 前端配置
+### Frontend Configuration
 
-编辑 `frontend/src/config.js`：
+Edit `frontend/src/config.js`:
 
 ```javascript
 export const CONFIG = {
@@ -195,141 +154,104 @@ export const CONFIG = {
 };
 ```
 
-## API 接口
+## API
 
 ### HTTP API
 
-- `POST /api/upload` - 上传文件（multipart/form-data）
-- `GET /api/files/:id` - 获取文件信息
-- `DELETE /api/files/:id` - 删除文件
-- `POST /api/sample/:id` - 同步采样（小数据量）
-- `GET /api/health` - 健康检查
-- `GET /api/metrics` - 获取缓存和性能指标
+- `GET /api/check?fingerprint={fp}` - Check if file fingerprint exists
+- `POST /api/upload` - Upload file (multipart/form-data with fingerprint)
+- `GET /api/files/:id` - Get file information
+- `DELETE /api/files/:id` - Delete file
+- `POST /api/sample/:id` - Synchronous sampling (for small data)
+- `GET /api/health` - Health check
+- `GET /api/metrics` - Get cache and performance metrics
 
 ### WebSocket API
 
-- `ws://localhost:3000/ws/:file_id` - WebSocket 连接
-- **消息格式**：使用 MessagePack（Map 格式）编码
-- **控制命令**：
-  - `sample` - 请求采样数据
-- **数据传输**：分块流式传输，每块 256KB
+- `ws://localhost:3000/ws/:file_id` - WebSocket connection
+- **Message Format**: MessagePack (Map format) encoding
+- **Control Commands**:
+  - `sample` - Request sample data
+- **Data Transfer**: Chunked streaming, 256KB per chunk
 
-详细 API 文档见 [docs/API_DESIGN.md](docs/API_DESIGN.md)
+See [docs/API_DESIGN.md](docs/API_DESIGN.md) for detailed API documentation
 
-## 性能指标
+## Performance Metrics
 
-| 指标 | 目标值 |
-|-----|--------|
-| 最大文件大小 | 10 GB |
-| 最大采样大小 | 128 MB |
-| 目标帧率 | 60 FPS |
-| 采样延迟 | < 500ms (1GB → 1MB) |
+| Metric | Target |
+|--------|--------|
+| Max File Size | 10 GB |
+| Max Sample Size | 128 MB |
+| Target FPS | 60 FPS |
+| Sampling Latency | < 500ms (1GB → 1MB) |
 
-## 设计原则
+## Design Principles
 
-- **Fast-Fail**: 遇到异常直接报错，不做降级处理
-- **最小依赖**: 仅使用必要的第三方库
-- **高性能**: 支持千万级点云实时渲染
-- **简洁架构**: 前后端直连，无中间代理
+- **Fast-Fail**: Fail immediately on errors, no fallback
+- **Minimal Dependencies**: Only use necessary libraries
+- **High Performance**: Supports tens of millions of points in real-time
+- **Simple Architecture**: Direct frontend-backend connection
+- **Smart Deduplication**: File fingerprinting to avoid duplicate uploads
 
-## 故障排查
+## Project Highlights
 
-### 后端问题
+### Technical Features
 
-1. **端口被占用**: 修改 `.env` 中的 `PORT` 配置
-2. **上传目录权限**: 确保 `uploads` 目录可写
-3. **依赖缺失**: 运行 `cargo build` 重新安装
+1. **File Fingerprinting**:
+   - Fingerprint based on filename hash + size + modification time
+   - Frontend pre-check to avoid duplicate uploads
+   - Fingerprint as filename for natural deduplication
+   - Persistent storage, survives page refresh
 
-### 前端问题
+2. **High-Performance Sampling**:
+   - `memmap2` memory-mapped files to avoid full loading
+   - Rayon parallel processing for faster sampling
+   - LRU cache to reduce redundant computation
 
-1. **无法连接后端**: 检查后端是否启动，确认 URL 配置
-2. **WebSocket 连接失败**: 确认防火墙设置
-3. **渲染性能差**: 降低采样大小，检查显卡驱动
+3. **Streaming Data Transfer**:
+   - WebSocket bidirectional communication
+   - MessagePack binary serialization (30-50% smaller than JSON)
+   - 256KB chunks for balanced latency and throughput
 
-## 开发
+4. **GPU-Accelerated Rendering**:
+   - Custom GLSL shaders
+   - Three.js `BufferGeometry` for efficient rendering
+   - Additive blending for brightness accumulation
 
-### 构建生产版本
+5. **Internationalization**:
+   - Auto-detects browser language
+   - Supports Chinese/English interface
+   - Page title and description auto-switch
 
-```bash
-# 后端
-cd backend
-cargo build --release
+### Architecture Features
 
-# 前端
-cd frontend
-npm run build
-```
+- **Frontend-Backend Separation**: Rust backend + JavaScript frontend
+- **Minimal Dependencies**: Only essential libraries
+- **Vanilla Stack**: Frontend uses native JavaScript + CSS, no frameworks
+- **Type Safety**: Rust provides compile-time type checking
 
-### 代码格式化
+## Troubleshooting
 
-```bash
-# Rust
-cargo fmt
+### Backend Issues
 
-# JavaScript
-npm run format  # 如果配置了 prettier
-```
+1. **Port Already in Use**: Change `PORT` in `.env`
+2. **Upload Directory Permissions**: Ensure `uploads` directory is writable
+3. **Missing Dependencies**: Run `cargo build` to reinstall
 
-## 许可证
+### Frontend Issues
 
-本项目仅用于学习和研究目的。
+1. **Cannot Connect to Backend**: Check if backend is running, verify URL config
+2. **WebSocket Connection Failed**: Check firewall settings
+3. **Poor Rendering Performance**: Reduce sample size, check graphics drivers
 
-## 项目特点
+## License
 
-### 技术亮点
+This project is licensed under the Apache 2.0 License. See [LICENSE](LICENSE) for details.
 
-1. **高性能采样**：
-   - 使用 `memmap2` 内存映射大文件，避免全量加载
-   - Rayon 并行计算加速采样过程
-   - LRU 缓存减少重复计算
+## References
 
-2. **流式数据传输**：
-   - WebSocket 双向通信
-   - MessagePack 二进制序列化（比 JSON 小 30-50%）
-   - 256KB 分块传输，平衡延迟和吞吐量
+This project is inspired by [Veles](https://github.com/codilime/veles) - an open-source binary analysis and visualization tool developed by CodiLime.
 
-3. **GPU 加速渲染**：
-   - 自定义 GLSL 着色器
-   - Three.js `BufferGeometry` 高效渲染
-   - 加性混合（Additive Blending）实现亮度叠加效果
+### Acknowledgements
 
-4. **Fast-Fail 设计**：
-   - 遇到错误直接报错，不做降级
-   - 简化错误处理逻辑
-   - 便于调试和问题定位
-
-### 架构特色
-
-- **前后端分离**：Rust 后端 + JavaScript 前端
-- **最小依赖**：仅使用必要的第三方库
-- **原生技术栈**：前端不使用框架，使用原生 JavaScript + CSS
-- **类型安全**：Rust 提供编译时类型检查
-
-## 相关文档
-
-- [系统设计](docs/SYSTEM_DESIGN.md)
-- [后端架构](docs/BACKEND_ARCHITECTURE.md)
-- [前端架构](docs/FRONTEND_ARCHITECTURE.md)
-- [API 设计](docs/API_DESIGN.md)
-- [任务列表](docs/TODO.md)
-
-## 参考项目
-
-本项目的设计灵感来自 [Veles](https://github.com/codilime/veles) - 一个由 CodiLime 开发的开源二进制分析和可视化工具。
-
-### Veles vs BinaryVis 对比
-
-| 特性 | Veles | BinaryVis |
-|------|-------|-----------|
-| **技术栈** | C++14 + Qt5 + Python3 | Rust + Axum + Three.js |
-| **架构** | 桌面应用 | Web 应用 |
-| **部署** | 需要安装客户端 | 浏览器访问即可 |
-| **渲染引擎** | OpenGL (Qt) | WebGL (Three.js) |
-| **数据传输** | 本地文件 | WebSocket 流式传输 |
-| **采样算法** | 内置多种算法 | 均匀采样 |
-| **可视化类型** | Trigram, Digram, Hex | Trigram (计划扩展) |
-| **跨平台** | Windows/Linux/macOS | 任何支持 WebGL 的浏览器 |
-
-### 致谢
-
-感谢 [Veles](https://github.com/codilime/veles) 项目提供的优秀设计思路和可视化理念。BinaryVis 在保持核心可视化原理的同时，采用了更现代的 Web 技术栈，使其更易于部署和使用。
+Thanks to the [Veles](https://github.com/codilime/veles) project for its excellent design concepts and visualization principles. BinaryVis maintains the core visualization principles while adopting modern web technologies for easier deployment and use.

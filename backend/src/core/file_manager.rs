@@ -5,7 +5,6 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
-use uuid::Uuid;
 
 pub struct FileManager {
     upload_dir: PathBuf,
@@ -20,16 +19,28 @@ impl FileManager {
         }
     }
 
-    // 保存上传的文件
-    pub async fn save_file(&self, data: &[u8], _filename: &str) -> Result<String> {
+    // 检查指纹对应的文件是否存在
+    pub async fn check_fingerprint(&self, fingerprint: &str) -> bool {
+        let path = self.upload_dir.join(fingerprint);
+        path.exists()
+    }
+
+    // 保存上传的文件（使用指纹作为文件名）
+    pub async fn save_file(&self, data: &[u8], fingerprint: &str) -> Result<String> {
         // 检查大小限制
         if data.len() > self.max_file_size {
             return Err(AppError::FileTooLarge(data.len()));
         }
 
-        // 生成唯一文件名
-        let file_id = Uuid::new_v4().to_string();
+        // 使用指纹作为文件名（天然去重）
+        let file_id = fingerprint.to_string();
         let path = self.upload_dir.join(&file_id);
+
+        // 如果文件已存在，直接返回file_id（去重）
+        if path.exists() {
+            tracing::info!("File with fingerprint {} already exists, skipping write", fingerprint);
+            return Ok(file_id);
+        }
 
         // 确保上传目录存在
         fs::create_dir_all(&self.upload_dir)
@@ -45,6 +56,7 @@ impl FileManager {
             .await
             .map_err(AppError::FileAccess)?;
 
+        tracing::info!("File saved with fingerprint: {}", fingerprint);
         Ok(file_id)
     }
 

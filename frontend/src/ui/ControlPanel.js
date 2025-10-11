@@ -1,4 +1,5 @@
 import { DEFAULT_COLORS } from '../config.js';
+import { i18n } from '../i18n/i18n.js';
 
 export class ControlPanel {
   constructor(container) {
@@ -12,26 +13,26 @@ export class ControlPanel {
       <div class="control-panel">
         <!-- 文件选择 -->
         <div class="control-group">
-          <h3>文件输入</h3>
+          <h3>${i18n.t('panel.fileInput')}</h3>
           <input type="file" id="file-input" accept="*/*">
           <div id="file-info" class="file-info"></div>
         </div>
 
         <!-- 采样控制 -->
         <div class="control-group">
-          <h3>采样设置</h3>
+          <h3>${i18n.t('panel.samplingSettings')}</h3>
           <label>
-            采样大小 (MB):
+            ${i18n.t('panel.sampleSize')}
             <input type="range" id="sample-size"
                    min="1" max="128" value="1" step="1">
             <span id="sample-size-value">1</span>
           </label>
-          <button id="sample-button" class="btn-primary" disabled>开始采样</button>
+          <button id="sample-button" class="btn-primary" disabled>${i18n.t('panel.startSampling')}</button>
         </div>
 
         <!-- 可视化类型 -->
         <div class="control-group">
-          <h3>可视化类型</h3>
+          <h3>${i18n.t('panel.visualizationType')}</h3>
           <div class="radio-group">
             <label>
               <input type="radio" name="vis-type" value="trigram" checked>
@@ -42,29 +43,29 @@ export class ControlPanel {
 
         <!-- 形状选择 -->
         <div class="control-group">
-          <h3>几何形状</h3>
+          <h3>${i18n.t('panel.geometryShape')}</h3>
           <div class="button-group">
-            <button data-shape="cube" class="shape-btn active">立方体</button>
-            <button data-shape="cylinder" class="shape-btn">圆柱体</button>
-            <button data-shape="sphere" class="shape-btn">球体</button>
+            <button data-shape="cube" class="shape-btn active">${i18n.t('panel.cube')}</button>
+            <button data-shape="cylinder" class="shape-btn">${i18n.t('panel.cylinder')}</button>
+            <button data-shape="sphere" class="shape-btn">${i18n.t('panel.sphere')}</button>
           </div>
         </div>
 
         <!-- 渲染参数 -->
         <div class="control-group">
-          <h3>渲染设置</h3>
+          <h3>${i18n.t('panel.renderSettings')}</h3>
           <label>
             <input type="checkbox" id="scaled-points" checked>
-            缩放点大小 (GPU密集)
+            ${i18n.t('panel.scalePoints')}
           </label>
           <label>
-            点大小:
+            ${i18n.t('panel.pointSize')}
             <input type="range" id="point-size"
                    min="0.5" max="5" value="1.5" step="0.1">
             <span id="point-size-value">1.5</span>
           </label>
           <label>
-            亮度:
+            ${i18n.t('panel.brightness')}
             <input type="range" id="brightness"
                    min="0" max="100" value="50">
             <span id="brightness-value">50</span>
@@ -73,25 +74,25 @@ export class ControlPanel {
 
         <!-- 颜色设置 -->
         <div class="control-group">
-          <h3>色带颜色</h3>
+          <h3>${i18n.t('panel.colorSettings')}</h3>
           <label>
-            起始颜色:
+            ${i18n.t('panel.colorBegin')}
             <input type="color" id="color-begin" value="${DEFAULT_COLORS.BEGIN}">
           </label>
           <label>
-            结束颜色:
+            ${i18n.t('panel.colorEnd')}
             <input type="color" id="color-end" value="${DEFAULT_COLORS.END}">
           </label>
-          <button id="reset-colors" class="btn-secondary">恢复默认颜色</button>
+          <button id="reset-colors" class="btn-secondary">${i18n.t('panel.resetColors')}</button>
         </div>
 
         <!-- 状态信息 -->
         <div class="control-group">
-          <h3>状态</h3>
+          <h3>${i18n.t('panel.status')}</h3>
           <div id="status-info" class="status-info">
-            <div>FPS: <span id="fps">0</span></div>
-            <div>点数: <span id="point-count">0</span></div>
-            <div>进度: <span id="progress">0%</span></div>
+            <div>${i18n.t('panel.fps')} <span id="fps">0</span></div>
+            <div>${i18n.t('panel.pointCount')} <span id="point-count">0</span></div>
+            <div>${i18n.t('panel.progress')} <span id="progress">0%</span></div>
           </div>
         </div>
       </div>
@@ -227,13 +228,23 @@ export class ControlPanel {
   }
 
   // 更新文件信息
-  updateFileInfo(file) {
+  updateFileInfo(file, uploading = false) {
     const fileInfo = document.getElementById('file-info');
     const sizeMB = (file.size / 1024 / 1024).toFixed(2);
-    fileInfo.innerHTML = `
-      <div><strong>${file.name}</strong></div>
-      <div>大小: ${sizeMB} MB</div>
-    `;
+
+    if (uploading) {
+      fileInfo.innerHTML = `
+        <div><strong>${file.name}</strong></div>
+        <div>${i18n.t('panel.fileSize')} ${sizeMB} MB</div>
+        <div style="color: #ffa500;">${i18n.t('file.uploading')}</div>
+      `;
+    } else {
+      fileInfo.innerHTML = `
+        <div><strong>${file.name}</strong></div>
+        <div>${i18n.t('panel.fileSize')} ${sizeMB} MB</div>
+        <div style="color: #4caf50;">${i18n.t('file.ready')}</div>
+      `;
+    }
   }
 
   // 更新状态显示

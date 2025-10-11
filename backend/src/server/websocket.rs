@@ -26,6 +26,9 @@ pub async fn websocket_handler(
 }
 
 async fn handle_socket(socket: WebSocket, state: Arc<AppState>, file_id: String) {
+    info!("========== WebSocket Connection Established ==========");
+    info!("  File ID: {}", file_id);
+
     let (mut sender, mut receiver) = socket.split();
     let (tx, mut rx) = mpsc::channel::<Vec<u8>>(100);
 
@@ -119,6 +122,10 @@ async fn perform_sampling(
     file_id: &str,
     sample_size: usize,
 ) -> Result<Vec<u8>> {
+    info!("========== Performing Sampling ==========");
+    info!("  File ID: {}", file_id);
+    info!("  Sample size: {}", sample_size);
+
     // 验证采样大小
     if sample_size > state.config.max_sample_size {
         return Err(AppError::InvalidSampleSize(sample_size));
@@ -127,19 +134,27 @@ async fn perform_sampling(
     // 检查缓存
     let cache_key = Cache::make_key(file_id, sample_size);
     if let Some(cached) = state.cache.get(cache_key) {
-        info!("Cache hit for file {} size {}", file_id, sample_size);
+        info!("  Cache HIT - returning cached data");
+        info!("  Cached data size: {} bytes", cached.len());
+        info!("  First 16 bytes: {:02x?}", &cached[..16.min(cached.len())]);
         return Ok(cached);
     }
 
+    info!("  Cache MISS - performing new sampling");
+
     // 内存映射文件
     let mmap = state.file_manager.mmap_file(file_id)?;
+    info!("  File mapped, size: {} bytes", mmap.len());
 
     // 执行采样
     let sampler = UniformSampler;
     let result = sampler.sample(mmap, sample_size)?;
+    info!("  Sampling complete, result size: {} bytes", result.data.len());
+    info!("  First 16 bytes: {:02x?}", &result.data[..16.min(result.data.len())]);
 
     // 更新缓存
     state.cache.put(cache_key, result.data.clone());
+    info!("  Data cached with key: {}", cache_key);
 
     Ok(result.data)
 }

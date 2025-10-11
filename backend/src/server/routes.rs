@@ -2,6 +2,7 @@ use axum::{routing::{delete, get, post}, Router};
 
 pub fn api_routes() -> Router {
     Router::new()
+        .route("/check", get(super::handlers::check_fingerprint))
         .route("/upload", post(super::handlers::upload_file))
         .route("/files/:id", get(super::handlers::get_file_info))
         .route("/files/:id", delete(super::handlers::delete_file))
